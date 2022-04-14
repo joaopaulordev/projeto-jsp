@@ -10,7 +10,7 @@
 
 	<h1>Bem vindo ao Projeto JSP</h1>
 	<%
-		out.print("Seu sucesso garantido!!!");
+		out.print("Aqui seu sucesso garantido!!!");
 	%>
 	
 	<form method="post"" action="ServletLogin">
