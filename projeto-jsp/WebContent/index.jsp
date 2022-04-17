@@ -31,7 +31,7 @@
 	
 	.msg{
 		position: absolute;
-		top:60%;
+		top:75%;
 		left: 33%;
 		color: red;
 	}
@@ -41,11 +41,11 @@
 
 	<h5>Bem vindo ao Projeto JSP</h5>
 
-	<form method="post" " action="ServletLogin" class="row g-3 needs-validation" novalidate>
+	<form method="post" " action="<%= request.getContextPath() %>/ServletLogin" class="row g-3 needs-validation" novalidate>
 
 		<input type="hidden" name="url" value="<%=request.getParameter("url")%>"> 
 			
-		 <div class="col-md-6">
+		 <div class="mb-3">
 			<label class="form-label">Login:</label>
 			<input class="form-control" name="login" type="text" required>
 			<div class="invalid-feedback">
@@ -53,7 +53,7 @@
       		</div>
 		</div> 
 			
-		<div class="col-md-6">
+		<div class="mb-3">
 			<label class="form-label">Senha:</label> 
 			<input class="form-control" name="senha" type="password" required>
 			<div class="invalid-feedback">
