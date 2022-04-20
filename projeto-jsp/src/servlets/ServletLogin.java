@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dao.DAOLoginRepository;
+import dao.DAOUsuarioRepository;
 import model.ModelLogin;
 
 @WebServlet(urlPatterns = { "/principal/ServletLogin", "/ServletLogin" })
@@ -17,6 +18,7 @@ public class ServletLogin extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private DAOLoginRepository daoLoginRepository = new DAOLoginRepository();
+	private DAOUsuarioRepository daoUsuario = new DAOUsuarioRepository();
 
 	public ServletLogin() {
 	}
@@ -55,7 +57,9 @@ public class ServletLogin extends HttpServlet {
 				modelLogin.setSenha(senha);
 
 				if (daoLoginRepository.validarAutenticacao(modelLogin)) {
-
+					
+					//request.getSession().setAttribute("isAdmin", daoUsuario.consultaUsuario(login).isUseradmin());
+					request.getSession().setAttribute("perfil", daoUsuario.consultaUsuario(login).getPerfil());
 					request.getSession().setAttribute("usuario", modelLogin.getLogin());
 
 					if (url == null || url.equals("null")) {

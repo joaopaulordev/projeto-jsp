@@ -11,6 +11,12 @@ public class ModelLogin implements Serializable{
 	private String email;
 	private String login;
 	private String senha;
+	private boolean useradmin;
+	private String perfil;
+	private String sexo;
+	private String fotoUser;
+	private String fotoUserExtensao;
+	
 	
 	public boolean isNovo() {
 		if (this.id == null) {
@@ -22,6 +28,47 @@ public class ModelLogin implements Serializable{
 		return true;
 	}
 	
+		
+	public String getFotoUser() {
+		return fotoUser;
+	}
+	
+	public void setFotoUser(String fotoUser) {
+		this.fotoUser = fotoUser;
+	}
+
+	public String getFotoUserExtensao() {
+		return fotoUserExtensao;
+	}
+
+	public void setFotoUserExtensao(String fotoUserExtensao) {
+		this.fotoUserExtensao = fotoUserExtensao;
+	}
+
+	public String getSexo() {
+		return sexo;
+	}
+	
+	public void setSexo(String sexo) {
+		this.sexo = sexo;
+	}
+	
+	public String getPerfil() {
+		return perfil;
+	}
+
+	public void setPerfil(String perfil) {
+		this.perfil = perfil;
+	}
+
+	public boolean isUseradmin() {
+		return useradmin;
+	}
+
+	public void setUseradmin(boolean useradmin) {
+		this.useradmin = useradmin;
+	}
+
 	public String getLogin() {
 		return login;
 	}
