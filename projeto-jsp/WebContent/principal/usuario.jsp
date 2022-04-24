@@ -1,5 +1,5 @@
 <%@page import="model.ModelLogin"%>
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+<%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="ISO-8859-1"%>
    
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
@@ -66,7 +66,7 @@
                                                             <div class="form-group form-default input-group mb-4">
                                                             	<div class="input-group-prepend">
                                 									<c:if test="${modelLogin.fotoUser != '' && modelLogin.fotoUser != null}">
-                                                                       <a href="">
+                                                                       <a href="<%= request.getContextPath() %>/ServletUsuarioController?acao=downloadFoto&id=${modelLogin.id}">
 	                                                                     <img alt="Imagem User" id="fotoembase64" src="${modelLogin.fotoUser}" width="70px">
 	                                                                    </a>
                                                                     </c:if>
@@ -127,6 +127,46 @@
 											                    <span class="form-bar"></span>
                                                                 <label class="float-label">Perfil:</label>
 															  </div>
+															  
+															  
+															  
+															  
+															 <div class="form-group form-default form-static-label">
+                                                                <input type="text" onblur="pesquisaCep();" name="cep" id="cep" class="form-control" required="required" value="${modelLogin.cep}">
+                                                                <span class="form-bar"></span>
+                                                                <label class="float-label">CEP:</label>
+                                                            </div>
+                                                            
+                                                            <div class="form-group form-default form-static-label">
+                                                                <input type="text" name="logradouro" id="logradouro" class="form-control" required="required" value="${modelLogin.logradouro}">
+                                                                <span class="form-bar"></span>
+                                                                <label class="float-label">Logradouro:</label>
+                                                            </div>
+                                                            
+                                                            <div class="form-group form-default form-static-label">
+                                                                <input type="text" name="bairro" id="bairro" class="form-control" required="required" value="${modelLogin.bairro}">
+                                                                <span class="form-bar"></span>
+                                                                <label class="float-label">Bairro:</label>
+                                                            </div>
+                                                            
+                                                            <div class="form-group form-default form-static-label">
+                                                                <input type="text" name="localidade" id="localidade" class="form-control" required="required" value="${modelLogin.localidade}">
+                                                                <span class="form-bar"></span>
+                                                                <label class="float-label">Localidade:</label>
+                                                            </div>
+                                                            
+                                                            <div class="form-group form-default form-static-label">
+                                                                <input type="text" name="uf" id="uf" class="form-control" required="required" value="${modelLogin.uf}">
+                                                                <span class="form-bar"></span>
+                                                                <label class="float-label">UF:</label>
+                                                            </div>
+                                                            
+                                                            <div class="form-group form-default form-static-label">
+                                                                <input type="text" name="numero" id="numero" class="form-control" required="required" value="${modelLogin.numero}">
+                                                                <span class="form-bar"></span>
+                                                                <label class="float-label">Número:</label>
+                                                            </div>                                                            
+                                                            
                                                             
                                                             
                                                             <div class="form-group form-default form-static-label">
@@ -211,6 +251,20 @@
 												  </tbody>
 												</table>
 										  </div>
+										  
+										  <nav aria-label="Page navigation example">
+											  <ul class="pagination">
+											  <%
+											  	int totalPagina = (int) request.getAttribute("totalPagina");
+											  	
+											  	for(int p=0; p < totalPagina; p++){
+											  		String url = request.getContextPath()+"/ServletUsuarioController?acao=paginar&pagina="+(p * 5);
+											  		out.print("<li class=\"page-item\"><a class=\"page-link\" href=\""+ url +"\">"+ (p + 1) +"</a></li>");
+											  	}
+											  %>											    
+											  </ul>
+										  </nav>
+										  
 								                                         	
                                                                                  
                                         </div>
@@ -265,6 +319,12 @@
 			   </div>
 	           
 	      </div>
+	      
+		  <nav aria-label="Page navigation example">
+			  <ul class="pagination" id="ulPaginacaoUserAjax">
+			  </ul>
+		  </nav>
+	      
 	      <div class="modal-footer" style="display: flex; justify-content: space-between;">
 	        <span id="totalResultados"></span>
 	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
@@ -277,6 +337,30 @@
     <jsp:include page="javascriptfiles.jsp"></jsp:include>
     
     <script type="text/javascript">
+    
+    	function pesquisaCep() {
+    		
+    		var cep = $("#cep").val();
+    		    		
+    		//Consulta o webservice viacep.com.br/
+            $.getJSON("https://viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
+
+                if (!("erro" in dados)) {
+                    //Atualiza os campos com os valores da consulta.
+                    $("#cep").val(dados.cep);
+                    $("#logradouro").val(dados.logradouro);
+                    $("#bairro").val(dados.bairro);
+                    $("#localidade").val(dados.localidade);
+                    $("#uf").val(dados.uf);
+                    
+                } //end if.
+                else {
+                    //CEP pesquisado não foi encontrado.
+                    limpa_formulário_cep();
+                    alert("CEP não encontrado.");
+                }
+            });
+		}
     
     	function visualizarImg(fotoembase64, fileFoto) {
     		
@@ -304,7 +388,20 @@
     		window.location.href = 	urlAction +'?acao=buscarEditar&id='+ id;
 		}
     
+    	
+    	
     	function buscarUsuarioByNome() {
+    		
+    		var nomeBusca = document.getElementById("nomeBusca").value;
+    		
+    		var urlParams = 'nomeBusca=' + nomeBusca +'&acao=buscarUsuarioAjax'
+    		
+    		buscarUsuarioPaginadoAjax(urlParams);
+		}
+    	
+    	
+    	
+    	function buscarUsuarioPaginadoAjax(urlParams) {
     		
     		var nomeBusca = document.getElementById("nomeBusca").value;
     		
@@ -315,17 +412,28 @@
 	    		$.ajax({
 	    			method: "get",
 	    			url: urlAction,
-	    			data: 'nomeBusca=' + nomeBusca +'&acao=buscarUsuarioAjax',
-	    			success: function (response){
+	    			data: urlParams,
+	    			success: function (response, textStatus, xhr){
 	    			
 	    				var json = JSON.parse(response);
 	    				
 	    				$('#tabelaResultado > tbody > tr').remove();
 	    				for(var p = 0; p < json.length; p++){
 	    					$('#tabelaResultado > tbody').append('<tr> <td>'+ json[p].id +'</td>  <td>'+ json[p].nome +'</td> <td>'+ json[p].login +'</td> <td><button onclick="verEditar('+ json[p].id +')" type="button" class="btn btn-link">Ver</button></td> </tr>')
-	    				}
-	    					
+	    				}	    					
 	    				document.getElementById('totalResultados').textContent = 'Total de Resultados: '+json.length;
+	    				
+	    				
+	    				//Paginação
+	    				$("#ulPaginacaoUserAjax > li").remove();
+	    				var totalPaginasAjax = xhr.getResponseHeader("totalPaginasAjax");
+	    				
+	    				for (var p = 0; p < totalPaginasAjax; p++){
+	    					var urlParams = 'nomeBusca='+ nomeBusca +'&acao=buscarUsuarioAjaxPaginacao&pagina='+(p *5);
+	    					
+	    					$("#ulPaginacaoUserAjax").append('<li class="page-item"><a class="page-link" href="#" onclick="buscarUsuarioPaginadoAjax(\''+ urlParams +'\')">'+ (p + 1) +'</a></li>');
+	    				}
+	    				
 	    			}
 	    			
 	    		}).fail(function(xhr, status, errorThrown){

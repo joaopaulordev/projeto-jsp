@@ -22,7 +22,7 @@ public class ServletGenericUtil extends HttpServlet implements Serializable {
 
 		String usuarioLogado = (String) session.getAttribute("usuario");
 		
-		return daoUsuario.consultaUsuario(usuarioLogado).getId();
+		return daoUsuario.consultaUsuarioByLogin(usuarioLogado).getId();
 	}
 
 }

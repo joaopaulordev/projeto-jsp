@@ -45,3 +45,54 @@ ALTER TABLE model_login ADD column userAdmin boolean not null default false;
 
 alter table model_login add column usuario_id bigint not null default 1;
 alter table model_login add constraint usuario_fk foreign key (usuario_id) references model_login (id);
+
+
+================TELEFONE====================================================================================
+CREATE SEQUENCE IF NOT EXISTS public.telefone_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+    
+    
+CREATE TABLE telefone
+(
+	id integer NOT NULL DEFAULT nextval('telefone_id_seq'::regclass),
+	numero character varying(50),
+	usuario_pai_id bigint not null,
+	usuario_cad_id bigint not null,	
+    CONSTRAINT telefone_pkey PRIMARY KEY (id),
+	CONSTRAINT usuario_pai_fk FOREIGN KEY (usuario_pai_id) REFERENCES model_login (id),
+	CONSTRAINT usuario_cad_fk FOREIGN KEY (usuario_cad_id) REFERENCES model_login (id)    
+)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
