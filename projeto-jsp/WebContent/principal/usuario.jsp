@@ -207,6 +207,11 @@
                                                             <button type="button" class="btn btn-primary waves-effect waves-light" onclick="limparForm()">Novo</button>
 												            <button class="btn btn-success waves-effect waves-light">Salvar</button>
 												            <button type="button" class="btn btn-warning waves-effect waves-light" onclick="criaDeleteComAjax()">Excluir</button>
+												            
+												            <c:if test="${modelLogin.id != null && modelLogin.id != '' }">
+												            	<a class="btn btn-primary waves-effect waves-light" href="<%= request.getContextPath() %>/ServletTelefone?iduser=${modelLogin.id}">Telefone</a>
+												            </c:if>
+												            
 												            <!-- Button trigger modal -->
 															<button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModalUsuario">
 															  Pesquisar
