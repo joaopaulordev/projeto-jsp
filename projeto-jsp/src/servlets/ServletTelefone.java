@@ -51,7 +51,7 @@ public class ServletTelefone extends ServletGenericUtil {
 			if (idUser != null && !idUser.isEmpty()) {
 				request.setAttribute("modelLogin", daoUsuario.consultaUsuarioById(idUser));
 				
-				request.setAttribute("modelTelefones", new DAOTelefoneRepository().listarTelefonesByUsuarioPai(Long.parseLong(idUser)));
+				request.setAttribute("modelTelefones", daoTelefone.listarTelefonesByUsuarioPai(Long.parseLong(idUser)));
 				
 				request.getRequestDispatcher("principal/telefone.jsp").forward(request, response);				
 			
@@ -78,18 +78,25 @@ public class ServletTelefone extends ServletGenericUtil {
 			
 			ModelLogin modelLogin = daoUsuario.consultaUsuarioById(idUser);
 			
-			ModelTelefone objTelefone = new ModelTelefone();
-			objTelefone.setNumero(numero);
-			objTelefone.setUsuario_pai(modelLogin);
-			objTelefone.setUsuario_cad(daoUsuario.consultaUsuarioById(""+super.getIdUsuarioLogado(request)));			
-			new DAOTelefoneRepository().gravarTelefone(objTelefone);
+			if (!daoTelefone.existeTelefone(Long.parseLong(idUser), numero)) {
+				
+				ModelTelefone objTelefone = new ModelTelefone();
+				objTelefone.setNumero(numero);
+				objTelefone.setUsuario_pai(modelLogin);
+				objTelefone.setUsuario_cad(daoUsuario.consultaUsuarioById(""+super.getIdUsuarioLogado(request)));			
+				daoTelefone.gravarTelefone(objTelefone);
+				
+				request.setAttribute("msg", "Telefone gravado com sucesso.");				
+			}else {
+				request.setAttribute("msg", "Telefone já existe.");
+			}
 			
-			request.setAttribute("modelTelefones", daoTelefone.listarTelefonesByUsuarioPai(Long.parseLong(idUser)));
-			
+			request.setAttribute("modelTelefones", daoTelefone.listarTelefonesByUsuarioPai(Long.parseLong(idUser)));				
 			request.setAttribute("modelLogin", modelLogin);			
-			request.setAttribute("msg", "Telefone gravado com sucesso.");
+			
 			RequestDispatcher redirecionar = request.getRequestDispatcher("principal/telefone.jsp");
-			redirecionar.forward(request, response);			
+			redirecionar.forward(request, response);
+			
 		}catch (Exception e) {
 			e.printStackTrace();
 		}

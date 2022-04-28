@@ -54,8 +54,6 @@
 														<form class="form-material"
 															action="<%=request.getContextPath()%>/ServletTelefone" method="post" id="formFone">
 
-															<input type="hidden" name="acao" id="acao" value="">
-
 															<div class="form-group form-default form-static-label">
 																<input type="text" name="idUser" id="idUser" class="form-control" readonly="readonly" value="${modelLogin.id}">
 																<span class="form-bar"></span> 
@@ -129,6 +127,13 @@
 
 	<jsp:include page="javascriptfiles.jsp"></jsp:include>
 
+<script type="text/javascript">
+
+	$("#numero").keypress(function (event) {
+ 	   return /\d/.test(String.fromCharCode(event.keyCode)); 
+ 	});
+
+</script>
 
 </body>
 

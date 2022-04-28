@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+<%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="ISO-8859-1"%>
 
     
@@ -11,7 +11,7 @@
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
       <![endif]-->
       <!-- Meta -->
-      <meta charset="utf-8">
+      <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
       <meta name="description" content="Mega Able Bootstrap admin template made using Bootstrap 4 and it has huge amount of ready made feature, UI components, pages which completely fulfills any dashboard needs." />
@@ -36,5 +36,7 @@
       <!-- am chart export.css -->
       <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
       <!-- Style.css -->
-      <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/assets/css/style.css">   
+      <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/assets/css/style.css">  
+
+	  <link href="https://code.jquery.com/ui/1.9.1/themes/smoothness/jquery-ui.css" rel="stylesheet">
   </head>

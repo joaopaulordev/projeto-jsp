@@ -1,14 +1,18 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import beanDTO.BeanDTOGraficoMediaSalarioUser;
 import connection.SingleConnectionBanco;
 import model.ModelLogin;
+import model.ModelTelefone;
 
 public class DAOUsuarioRepository {
 	
@@ -18,12 +22,67 @@ public class DAOUsuarioRepository {
 		connection = SingleConnectionBanco.getConnection();
 	}
 	
+	
+	public BeanDTOGraficoMediaSalarioUser gerarGraficoMediaSalarioMensalUser(Long idUsuarioLogado, String dataInicial, String dataFinal) throws Exception {
+		
+		String sql = "select avg(rendamensal) as media_salarial, perfil from model_login where usuario_id = ? AND datanascimento >= ? AND datanascimento <= ? group by perfil";
+		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		
+		preparedStatement.setLong(1, idUsuarioLogado);
+		preparedStatement.setDate(2, Date.valueOf(new SimpleDateFormat("yyyy-mm-dd").format(new SimpleDateFormat("dd/mm/yyyy").parse(dataInicial))));
+		preparedStatement.setDate(3, Date.valueOf(new SimpleDateFormat("yyyy-mm-dd").format(new SimpleDateFormat("dd/mm/yyyy").parse(dataFinal))));							   
+		
+		ResultSet rs = preparedStatement.executeQuery();
+		
+		BeanDTOGraficoMediaSalarioUser beanMediaSalario = new BeanDTOGraficoMediaSalarioUser();
+		
+		List<String> perfils = new ArrayList<String>();
+		List<Double> salarios = new ArrayList<Double>();
+		
+		while (rs.next()) {
+			perfils.add(rs.getString("perfil"));
+			salarios.add(rs.getDouble("media_salarial"));
+		}
+		
+		beanMediaSalario.setPerfils(perfils);
+		beanMediaSalario.setSalarios(salarios);
+		
+		return beanMediaSalario;	
+	}
+	
+	
+	public BeanDTOGraficoMediaSalarioUser gerarGraficoMediaSalarioMensalUser(Long usuarioLogado) throws Exception {
+		
+		String sql = "select avg(rendamensal) as media_salarial, perfil from model_login where usuario_id = ? group by perfil";
+		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		
+		preparedStatement.setLong(1, usuarioLogado);
+		
+		ResultSet rs = preparedStatement.executeQuery();
+		
+		BeanDTOGraficoMediaSalarioUser beanMediaSalario = new BeanDTOGraficoMediaSalarioUser();
+		
+		List<String> perfils = new ArrayList<String>();
+		List<Double> salarios = new ArrayList<Double>();
+		
+		while (rs.next()) {
+			perfils.add(rs.getString("perfil"));
+			salarios.add(rs.getDouble("media_salarial"));
+		}
+		
+		beanMediaSalario.setPerfils(perfils);
+		beanMediaSalario.setSalarios(salarios);
+		
+		return beanMediaSalario;		
+	}
+	
+	
 	public ModelLogin gravarUsuario(ModelLogin obj, Long usuarioLogado) throws SQLException {
 		
 		String sql = "";
 		
 		if(obj.isNovo()) {
-			sql = "INSERT INTO model_login(login, senha, nome, email, usuario_id, perfil, sexo, cep, logradouro, bairro, localidade, uf, numero) VALUES (?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?);";
+			sql = "INSERT INTO model_login(login, senha, nome, email, usuario_id, perfil, sexo, cep, logradouro, bairro, localidade, uf, numero, datanascimento, rendamensal) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?);";
 			PreparedStatement preparedSql = connection.prepareStatement(sql);
 			preparedSql.setString(1, obj.getLogin());
 			preparedSql.setString(2, obj.getSenha());
@@ -38,6 +97,8 @@ public class DAOUsuarioRepository {
 			preparedSql.setString(11, obj.getLocalidade());
 			preparedSql.setString(12, obj.getUf());
 			preparedSql.setString(13, obj.getNumero());
+			preparedSql.setDate(14, obj.getDataNascimento());
+			preparedSql.setDouble(15, obj.getRendaMensal());
 			
 			preparedSql.execute();
 			connection.commit();	
@@ -54,7 +115,7 @@ public class DAOUsuarioRepository {
 			}
 			
 		}else {
-			sql = "UPDATE model_login SET login=?, senha=?, nome=?, email=?, perfil=?, sexo=?, cep=?, logradouro=?, bairro=?, localidade=?, uf=?, numero=? WHERE id = ?";
+			sql = "UPDATE model_login SET login=?, senha=?, nome=?, email=?, perfil=?, sexo=?, cep=?, logradouro=?, bairro=?, localidade=?, uf=?, numero=?, datanascimento=?, rendamensal=? WHERE id = ?";
 			PreparedStatement preparedSql = connection.prepareStatement(sql);
 			preparedSql.setString(1, obj.getLogin());
 			preparedSql.setString(2, obj.getSenha());
@@ -69,8 +130,10 @@ public class DAOUsuarioRepository {
 			preparedSql.setString(10, obj.getLocalidade());
 			preparedSql.setString(11, obj.getUf());
 			preparedSql.setString(12, obj.getNumero());
-		
-			preparedSql.setLong(13, obj.getId());
+			preparedSql.setDate(13, obj.getDataNascimento());
+			preparedSql.setDouble(14, obj.getRendaMensal());
+			
+			preparedSql.setLong(15, obj.getId());
 			
 			preparedSql.executeUpdate();
 			connection.commit();
@@ -118,6 +181,8 @@ public class DAOUsuarioRepository {
 			modelLogin.setLocalidade(rs.getString("localidade"));
 			modelLogin.setUf(rs.getString("uf"));
 			modelLogin.setNumero(rs.getString("numero"));
+			modelLogin.setDataNascimento(rs.getDate("datanascimento"));
+			modelLogin.setRendaMensal(rs.getDouble("rendamensal"));
 		}		
 		
 		return modelLogin;		
@@ -149,6 +214,8 @@ public class DAOUsuarioRepository {
 			modelLogin.setLocalidade(rs.getString("localidade"));
 			modelLogin.setUf(rs.getString("uf"));
 			modelLogin.setNumero(rs.getString("numero"));
+			modelLogin.setDataNascimento(rs.getDate("datanascimento"));
+			modelLogin.setRendaMensal(rs.getDouble("rendamensal"));
 		}		
 		
 		return modelLogin;		
@@ -228,6 +295,64 @@ public class DAOUsuarioRepository {
 		return pagina.intValue();
 	}
 
+	
+	public List<ModelLogin> buscarUsuariosRel(Long usuarioLogado) throws Exception{
+		
+		DAOTelefoneRepository daoTelefone = new DAOTelefoneRepository();
+		List<ModelLogin> listaRetorno = new ArrayList<ModelLogin>();
+		
+		String sql = "SELECT * FROM model_login where userAdmin is false AND usuario_id = ? order by nome";
+		PreparedStatement preparedSQL = connection.prepareStatement(sql);
+		preparedSQL.setLong(1, usuarioLogado);
+		
+		ResultSet rs = preparedSQL.executeQuery();
+		while(rs.next()) {
+			ModelLogin obj = new ModelLogin();
+			obj.setLogin(rs.getString("login"));
+			obj.setId(rs.getLong("id"));
+			obj.setNome(rs.getString("nome"));
+			obj.setEmail(rs.getString("email"));
+			obj.setPerfil(rs.getString("perfil"));
+			obj.setSexo(rs.getString("sexo"));
+			obj.setDataNascimento(rs.getDate("datanascimento"));
+			
+			obj.setTelefones(daoTelefone.listarTelefonesByUsuarioPai(obj.getId()));
+						
+			listaRetorno.add(obj);
+		}
+		
+		return listaRetorno;
+	}
+	
+	public List<ModelLogin> buscarUsuariosRelByData(Long usuarioLogado, String dataInicial, String dataFinal) throws Exception{
+		
+		DAOTelefoneRepository daoTelefone = new DAOTelefoneRepository();
+		List<ModelLogin> listaRetorno = new ArrayList<ModelLogin>();
+		
+		String sql = "SELECT * FROM model_login where userAdmin is false AND usuario_id = ?	AND datanascimento >= ? AND datanascimento <= ? order by nome";
+		PreparedStatement preparedSQL = connection.prepareStatement(sql);
+		preparedSQL.setLong(1, usuarioLogado);
+		preparedSQL.setDate(2, Date.valueOf(new SimpleDateFormat("yyyy-mm-dd").format(new SimpleDateFormat("dd/mm/yyyy").parse(dataInicial))));
+		preparedSQL.setDate(3, Date.valueOf(new SimpleDateFormat("yyyy-mm-dd").format(new SimpleDateFormat("dd/mm/yyyy").parse(dataFinal))));							   
+		
+		ResultSet rs = preparedSQL.executeQuery();
+		while(rs.next()) {
+			ModelLogin obj = new ModelLogin();
+			obj.setLogin(rs.getString("login"));
+			obj.setId(rs.getLong("id"));
+			obj.setNome(rs.getString("nome"));
+			obj.setEmail(rs.getString("email"));
+			obj.setPerfil(rs.getString("perfil"));
+			obj.setSexo(rs.getString("sexo"));
+			obj.setDataNascimento(rs.getDate("datanascimento"));
+			
+			obj.setTelefones(daoTelefone.listarTelefonesByUsuarioPai(obj.getId()));
+						
+			listaRetorno.add(obj);
+		}
+		
+		return listaRetorno;
+	}
 		
 	
 	public List<ModelLogin> buscarUsuarios(Long usuarioLogado) throws Exception{
@@ -329,7 +454,5 @@ public class DAOUsuarioRepository {
 		
 		connection.commit();		
 	}
-	
-	
 
 }

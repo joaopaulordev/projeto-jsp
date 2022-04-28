@@ -8,7 +8,7 @@
                    <div class="col-md-8">
                        <div class="page-header-title">
                            <h5 class="m-b-10">Projeto JSP</h5>
-                           <p class="m-b-0">Seja muito bem vindo!!</p>
+                           <p class="m-b-0">Seja muito bem vindo - João Paulo!!</p>
                        </div>
                    </div>
                    <div class="col-md-4">

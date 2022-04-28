@@ -178,9 +178,16 @@
                           <div class="pcoded-navigation-label" data-i18n="nav.category.forms">Relatórios</div>
                           <ul class="pcoded-item pcoded-left-item">
                               <li>
-                                  <a href="chart.html" class="waves-effect waves-dark">
+                                  <a href="<%= request.getContextPath() %>/principal/relatorioUser.jsp" class="waves-effect waves-dark">
                                       <span class="pcoded-micon"><i class="ti-layers"></i><b>FC</b></span>
                                       <span class="pcoded-mtext" data-i18n="nav.form-components.main">Usuário</span>
+                                      <span class="pcoded-mcaret"></span>
+                                  </a>
+                              </li>
+                              <li>
+                                  <a href="<%= request.getContextPath() %>/principal/relatorioUserGrafico.jsp" class="waves-effect waves-dark">
+                                      <span class="pcoded-micon"><i class="ti-layers"></i><b>FC</b></span>
+                                      <span class="pcoded-mtext" data-i18n="nav.form-components.main">Gráfico Média Salário</span>
                                       <span class="pcoded-mcaret"></span>
                                   </a>
                               </li>
