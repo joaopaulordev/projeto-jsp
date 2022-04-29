@@ -69,7 +69,13 @@ CREATE TABLE telefone
 )
     
     
-    
+=========VERSIONADOR BANCO===================================================================================
+CREATE TABLE public.versionadorbanco
+(
+    id integer NOT NULL DEFAULT nextval('versionadorbanco_seq'::regclass),
+    arquivo_sql character varying(100) not null,
+    CONSTRAINT id_pkey PRIMARY KEY (id)
+)
     
     
     
